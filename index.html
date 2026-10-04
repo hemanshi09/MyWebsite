@@ -1,0 +1,673 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BlogSpace - Your Daily Stories</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f8f9fc;
+    color: #20243a;
+}
+
+header {
+    background: white;
+    padding: 20px 8%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 10px #00000008;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.logo {
+    font-size: 27px;
+    font-weight: bold;
+    color: #5b4bdb;
+}
+
+nav a {
+    text-decoration: none;
+    color: #333;
+    margin-left: 25px;
+    font-weight: 600;
+}
+
+.hero {
+    padding: 75px 8%;
+    background: linear-gradient(120deg, #e9e8ff, #f8e9ff);
+    text-align: center;
+}
+
+.hero h1 {
+    font-size: 45px;
+    margin-bottom: 18px;
+}
+
+.hero h1 span {
+    color: #5b4bdb;
+}
+
+.hero p {
+    font-size: 17px;
+    color: #62647a;
+    margin-bottom: 25px;
+}
+
+.search-box {
+    max-width: 550px;
+    margin: auto;
+    display: flex;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 5px 20px #0000000a;
+}
+
+.search-box input {
+    flex: 1;
+    padding: 16px;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    min-width: 0;
+}
+
+.search-box button {
+    border: none;
+    background: #5b4bdb;
+    color: white;
+    padding: 0 25px;
+    cursor: pointer;
+}
+
+.container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 45px 25px;
+}
+
+.section-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.section-heading h2 {
+    font-size: 28px;
+}
+
+.add-btn {
+    background: #5b4bdb;
+    color: white;
+    padding: 13px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.categories {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 30px;
+}
+
+.category-btn {
+    padding: 10px 20px;
+    border: 1px solid #e0e0ee;
+    background: white;
+    border-radius: 25px;
+    cursor: pointer;
+}
+
+.category-btn.active,
+.category-btn:hover {
+    background: #5b4bdb;
+    color: white;
+    border-color: #5b4bdb;
+}
+
+.blog-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px;
+}
+
+.blog-card {
+    background: white;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 5px 25px #25234b0a;
+    transition: transform .25s;
+}
+
+.blog-card:hover {
+    transform: translateY(-5px);
+}
+
+.blog-card img {
+    width: 100%;
+    height: 210px;
+    object-fit: cover;
+}
+
+.blog-content {
+    padding: 22px;
+}
+
+.tag {
+    display: inline-block;
+    background: #eeebff;
+    color: #5b4bdb;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+    margin-bottom: 13px;
+}
+
+.blog-content h3 {
+    font-size: 21px;
+    margin-bottom: 12px;
+    line-height: 1.4;
+}
+
+.blog-content p {
+    color: #707286;
+    line-height: 1.7;
+    margin-bottom: 18px;
+    font-size: 14px;
+}
+
+.blog-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #777;
+    font-size: 13px;
+}
+
+.read-btn {
+    color: #5b4bdb;
+    border: none;
+    background: transparent;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.delete-btn {
+    color: #d43c50;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.empty {
+    text-align: center;
+    padding: 50px;
+    color: #777;
+    grid-column: 1 / -1;
+}
+
+footer {
+    background: #20243a;
+    color: white;
+    text-align: center;
+    padding: 30px 15px;
+    margin-top: 40px;
+}
+
+footer p {
+    color: #c5c6d4;
+    margin-top: 10px;
+}
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: #0009;
+    z-index: 20;
+    justify-content: center;
+    align-items: center;
+    padding: 15px;
+}
+
+.modal-box {
+    background: white;
+    width: 100%;
+    max-width: 550px;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 30px;
+    border-radius: 15px;
+}
+
+.modal-box h2 {
+    margin-bottom: 20px;
+}
+
+.modal-box input,
+.modal-box textarea,
+.modal-box select {
+    width: 100%;
+    padding: 13px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 15px;
+    font-family: inherit;
+}
+
+.modal-box textarea {
+    min-height: 150px;
+    resize: vertical;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.modal-actions button {
+    flex: 1;
+    padding: 13px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.cancel-btn {
+    background: #eee;
+}
+
+.save-btn {
+    background: #5b4bdb;
+    color: white;
+}
+
+#readBody {
+    line-height: 1.9;
+    white-space: pre-wrap;
+    margin-top: 15px;
+    color: #555;
+}
+
+@media (max-width: 900px) {
+    .blog-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    header {
+        padding: 18px 5%;
+    }
+
+    nav a {
+        margin-left: 10px;
+        font-size: 13px;
+    }
+
+    .hero {
+        padding: 55px 5%;
+    }
+
+    .hero h1 {
+        font-size: 32px;
+    }
+
+    .container {
+        padding: 30px 15px;
+    }
+
+    .blog-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .section-heading h2 {
+        font-size: 23px;
+    }
+
+    .add-btn {
+        padding: 11px 13px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">BlogSpace.</div>
+    <nav>
+        <a href="#">Home</a>
+        <a href="#blogs">Blogs</a>
+        <a href="#footer">Contact</a>
+    </nav>
+</header>
+
+<section class="hero">
+    <h1>Stories that <span>inspire.</span></h1>
+    <p>Discover ideas, explore stories, and share your thoughts with the world.</p>
+
+    <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Search for articles...">
+        <button onclick="renderBlogs()">Search</button>
+    </div>
+</section>
+
+<main class="container" id="blogs">
+    <div class="section-heading">
+        <h2>Explore Blogs</h2>
+        <button class="add-btn" onclick="openAddModal()">+ Write Blog</button>
+    </div>
+
+    <div class="categories" id="categories">
+        <button class="category-btn active" data-category="All">All</button>
+        <button class="category-btn" data-category="Technology">Technology</button>
+        <button class="category-btn" data-category="Lifestyle">Lifestyle</button>
+        <button class="category-btn" data-category="Travel">Travel</button>
+        <button class="category-btn" data-category="Education">Education</button>
+    </div>
+
+    <div class="blog-grid" id="blogGrid"></div>
+</main>
+
+<footer id="footer">
+    <h2>BlogSpace.</h2>
+    <p>Share your ideas. Inspire the world.</p>
+    <p>© 2026 BlogSpace. All rights reserved.</p>
+</footer>
+
+<!-- Add Blog Modal -->
+<div class="modal" id="addModal">
+    <div class="modal-box">
+        <h2>Write a New Blog</h2>
+
+        <form id="blogForm">
+            <input type="text" id="blogTitle" placeholder="Blog title" required>
+
+            <select id="blogCategory" required>
+                <option value="">Select Category</option>
+                <option>Technology</option>
+                <option>Lifestyle</option>
+                <option>Travel</option>
+                <option>Education</option>
+            </select>
+
+            <input type="text" id="blogAuthor" placeholder="Author name" required>
+
+            <input type="url" id="blogImage" placeholder="Image URL (optional)">
+
+            <textarea id="blogDescription" placeholder="Write your blog here..." required></textarea>
+
+            <div class="modal-actions">
+                <button type="button" class="cancel-btn" onclick="closeAddModal()">Cancel</button>
+                <button type="submit" class="save-btn">Publish Blog</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Read Blog Modal -->
+<div class="modal" id="readModal">
+    <div class="modal-box">
+        <h2 id="readTitle"></h2>
+        <span class="tag" id="readCategory"></span>
+        <p id="readAuthor"></p>
+        <div id="readBody"></div>
+        <br>
+        <button class="add-btn" onclick="closeReadModal()">Close</button>
+    </div>
+</div>
+
+<script>
+const defaultBlogs = [
+    {
+        id: 1,
+        title: "The Future of Artificial Intelligence",
+        category: "Technology",
+        author: "Rahul Sharma",
+        date: "Sep 20, 2026",
+        image: "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800",
+        description: "Artificial Intelligence is changing the way we live and work. From smart assistants to advanced automation, AI is creating new opportunities across industries. In this article, we explore how AI is shaping the future and what it means for the next generation."
+    },
+    {
+        id: 2,
+        title: "Simple Habits for a Better Life",
+        category: "Lifestyle",
+        author: "Priya Patel",
+        date: "Sep 18, 2026",
+        image: "https://images.unsplash.com/photo-1499209974431-9dddcece7f88?w=800",
+        description: "Small daily habits can make a big difference in your life. Staying organized, exercising regularly, reading books, and getting enough sleep can improve your overall well-being. Learn how simple changes can help you build a healthier and happier lifestyle."
+    },
+    {
+        id: 3,
+        title: "Exploring the Beauty of Mountains",
+        category: "Travel",
+        author: "Amit Verma",
+        date: "Sep 15, 2026",
+        image: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=800",
+        description: "Mountains offer breathtaking views, peaceful surroundings, and unforgettable adventures. Whether you enjoy hiking, photography, or simply relaxing in nature, a mountain trip can be a wonderful experience. Here are some tips to plan your next adventure."
+    },
+    {
+        id: 4,
+        title: "Why Learning to Code Matters",
+        category: "Education",
+        author: "Neha Shah",
+        date: "Sep 12, 2026",
+        image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800",
+        description: "Coding is an important skill in today's digital world. It develops problem-solving abilities and opens doors to careers in technology. Beginners can start with HTML, CSS, and JavaScript and gradually build their own projects."
+    },
+    {
+        id: 5,
+        title: "How Technology Connects the World",
+        category: "Technology",
+        author: "Karan Mehta",
+        date: "Sep 10, 2026",
+        image: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=800",
+        description: "Modern technology has made communication faster and easier. People can collaborate across countries, share knowledge, and build communities online. Discover how digital tools are changing communication, education, and business."
+    },
+    {
+        id: 6,
+        title: "A Weekend Getaway to Remember",
+        category: "Travel",
+        author: "Anjali Desai",
+        date: "Sep 08, 2026",
+        image: "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=800",
+        description: "A short trip can refresh your mind and help you discover new places. From peaceful lakes to beautiful landscapes, weekend getaways are a great way to take a break from your routine. Explore ideas for your next memorable trip."
+    }
+];
+
+let blogs;
+
+try {
+    const saved = localStorage.getItem("blogspace_posts");
+    blogs = saved ? JSON.parse(saved) : defaultBlogs;
+    if (!Array.isArray(blogs)) blogs = defaultBlogs;
+} catch (error) {
+    blogs = defaultBlogs;
+}
+
+let activeCategory = "All";
+
+function saveBlogs() {
+    try {
+        localStorage.setItem("blogspace_posts", JSON.stringify(blogs));
+    } catch (error) {
+        alert("Could not save posts. Browser storage may be full.");
+    }
+}
+
+function escapeHTML(value) {
+    return String(value).replace(/[&<>"']/g, function(char) {
+        return {
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#39;"
+        }[char];
+    });
+}
+
+function renderBlogs() {
+    const grid = document.getElementById("blogGrid");
+    const search = document.getElementById("searchInput").value.toLowerCase().trim();
+
+    const filtered = blogs.filter(blog => {
+        const matchesCategory = activeCategory === "All" || blog.category === activeCategory;
+        const matchesSearch =
+            blog.title.toLowerCase().includes(search) ||
+            blog.description.toLowerCase().includes(search) ||
+            blog.author.toLowerCase().includes(search);
+
+        return matchesCategory && matchesSearch;
+    });
+
+    if (filtered.length === 0) {
+        grid.innerHTML = '<div class="empty">No blogs found. Try another search!</div>';
+        return;
+    }
+
+    grid.innerHTML = filtered.map(blog => `
+        <article class="blog-card">
+            <img src="${escapeHTML(blog.image)}"
+                 alt="${escapeHTML(blog.title)}"
+                 onerror="this.onerror=null;this.src='https://placehold.co/800x450/e9e8ff/5b4bdb?text=BlogSpace'">
+
+            <div class="blog-content">
+                <span class="tag">${escapeHTML(blog.category)}</span>
+                <h3>${escapeHTML(blog.title)}</h3>
+                <p>${escapeHTML(blog.description.substring(0, 125))}${blog.description.length > 125 ? "..." : ""}</p>
+
+                <div class="blog-footer">
+                    <span>${escapeHTML(blog.author)} · ${escapeHTML(blog.date)}</span>
+                    <div>
+                        <button class="read-btn" onclick="readBlog(${Number(blog.id)})">Read →</button>
+                        ${blog.custom ? `<button class="delete-btn" onclick="deleteBlog(${Number(blog.id)})">Delete</button>` : ""}
+                    </div>
+                </div>
+            </div>
+        </article>
+    `).join("");
+}
+
+document.getElementById("categories").addEventListener("click", function(event) {
+    const button = event.target.closest(".category-btn");
+    if (!button) return;
+
+    activeCategory = button.dataset.category;
+
+    document.querySelectorAll(".category-btn").forEach(btn => {
+        btn.classList.toggle("active", btn === button);
+    });
+
+    renderBlogs();
+});
+
+document.getElementById("searchInput").addEventListener("input", renderBlogs);
+
+function openAddModal() {
+    document.getElementById("addModal").style.display = "flex";
+}
+
+function closeAddModal() {
+    document.getElementById("addModal").style.display = "none";
+}
+
+document.getElementById("blogForm").addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    const title = document.getElementById("blogTitle").value.trim();
+    const category = document.getElementById("blogCategory").value;
+    const author = document.getElementById("blogAuthor").value.trim();
+    const image = document.getElementById("blogImage").value.trim();
+    const description = document.getElementById("blogDescription").value.trim();
+
+    if (!title || !category || !author || !description) {
+        alert("Please fill in all required fields.");
+        return;
+    }
+
+    const newBlog = {
+        id: Date.now(),
+        title,
+        category,
+        author,
+        date: new Date().toLocaleDateString("en-US", {
+            month: "short",
+            day: "2-digit",
+            year: "numeric"
+        }),
+        image: image || "https://placehold.co/800x450/e9e8ff/5b4bdb?text=BlogSpace",
+        description,
+        custom: true
+    };
+
+    blogs.unshift(newBlog);
+    saveBlogs();
+
+    activeCategory = "All";
+    document.querySelectorAll(".category-btn").forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.category === "All");
+    });
+
+    document.getElementById("searchInput").value = "";
+    renderBlogs();
+    closeAddModal();
+    this.reset();
+    alert("Your blog has been published!");
+});
+
+function readBlog(id) {
+    const blog = blogs.find(item => item.id === id);
+    if (!blog) return;
+
+    document.getElementById("readTitle").textContent = blog.title;
+    document.getElementById("readCategory").textContent = blog.category;
+    document.getElementById("readAuthor").textContent = "By " + blog.author + " · " + blog.date;
+    document.getElementById("readBody").textContent = blog.description;
+    document.getElementById("readModal").style.display = "flex";
+}
+
+function closeReadModal() {
+    document.getElementById("readModal").style.display = "none";
+}
+
+function deleteBlog(id) {
+    if (!confirm("Are you sure you want to delete this blog?")) return;
+
+    blogs = blogs.filter(blog => blog.id !== id);
+    saveBlogs();
+    renderBlogs();
+}
+
+window.addEventListener("click", function(event) {
+    if (event.target.id === "addModal") closeAddModal();
+    if (event.target.id === "readModal") closeReadModal();
+});
+
+renderBlogs();
+</script>
+
+</body>
+</html>
